@@ -1,0 +1,44 @@
+@font-face {
+  font-family: urdu;
+  src: url('../Gandhara.ttf');
+}
+@font-face {
+  font-family: dancing;
+  src: url('../DancingScript-Regular.ttf');
+}
+@font-face {
+  font-family: playpenSans;
+  src: url('../PlaypenSans.ttf');
+}
+.urdu{
+  font-family: urdu;
+}
+.dancing{
+  font-family: dancing;
+}
+.playpenSans{
+  font-family: playpenSans;
+}
+#heading2{
+  font-size: 3rem;
+  line-height: 1;
+  font-family: urdu;
+}
+#sport{
+  transition: filter 0.3s;
+}
+#sport:hover{
+  filter: drop-shadow(1px 1px 5px #272727);
+}
+
+.card {
+  @apply border border-purple-200 rounded-lg w-3/5 m-auto my-4 md:w-2/4 md:m-6 lg:w-1/4 lg:m-6 bg-zinc-100 hover:bg-gray-200
+}
+
+.card-heading {
+  @apply  bg-gradient-to-r from-pink-500 to-yellow-500 rounded-t text-xl lg:text-2xl p-3 text-white font-bold hover:bg-gradient-to-r hover:from-yellow-500 hover:to-pink-500 transition-colors
+}
+
+.card-body {
+  @apply block;
+}
