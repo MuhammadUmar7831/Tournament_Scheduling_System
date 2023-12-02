@@ -8,7 +8,7 @@ import SomethingWentWrong from '../SomethingWentWrong';
 
 export default function ST_page3(props) {
 
-    const [progress, setProgress] = useState(0)
+    const [progress, setProgress] = useState(0);
 
     const schedule = useContext(ScheduleContext);
     const { setMatchFormat, matchFormat } = useContext(ScheduleContext);
@@ -210,7 +210,7 @@ export default function ST_page3(props) {
                                 </div>
                             </div>
                             <p className="playpenSans mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">you can see it in View Tournaments section</p>
-                            <button onClick={() => navigate('/viewTournament')} data-modal-hide="popup-modal" type="button" className="text-white bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:focus:ring-emerald-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                            <button onClick={() => { document.body.classList.remove('overflow-hidden');navigate('/viewTournament')}} data-modal-hide="popup-modal" type="button" className="text-white bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:focus:ring-emerald-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
                                 OK
                             </button>
                         </div>

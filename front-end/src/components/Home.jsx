@@ -1,8 +1,11 @@
 import React from 'react'
+import Navbar from './Navbar'
 
 export default function Home() {
     return (
         <>
+          <Navbar />
+
             <div className='flex'>
                 <div className='w-3/5 mt-6'>
                     <h1 className='text-center text-7xl text-orange-500 dancing'>Wellcome to <span className='urdu text-5xl'>کھیل</span> !</h1>

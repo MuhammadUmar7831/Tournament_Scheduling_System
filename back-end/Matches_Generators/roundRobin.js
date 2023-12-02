@@ -39,6 +39,8 @@ function generateTeamCombinations(teams, startDate, endDate, venues) {
     combinations.push({ number: matchNumber++, team1: "Qualifier 1", team2: "Qualifier 4", date: "", venue: venues[venueIndex++ % venues.length] });
     combinations.push({ number: matchNumber++, team1: "Qualifier 2", team2: "Qualifier 3", date: "", venue: venues[venueIndex++ % venues.length] });
 
+    combinations.push({ number: matchNumber++, team1: "Finalist 1", team2: "Finalist 2", date: "", venue: venues[venueIndex++ % venues.length] });
+
     distributeMatches(combinations, startDate, endDate);
 
     return combinations;

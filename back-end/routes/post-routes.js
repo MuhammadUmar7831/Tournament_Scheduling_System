@@ -36,12 +36,14 @@ router.post('/addSchedule', async (req, res) => {
             format,
             pin
         });
+
         const generatedMatches = await generateTeamCombinations(teams, StartDate, EndDate, venues);
         const generatedTeams = await teamsGenerator(teams);
         const generatedGroups = [];
 
         const newDetail = new Detail({
             tournamentPin: pin,
+            lastMatch: 0,
             teams: generatedTeams,
             groups: generatedGroups,
             matches: generatedMatches
@@ -54,7 +56,7 @@ router.post('/addSchedule', async (req, res) => {
         res.status(201).json(pin);  // 
 
     } catch (error) {
-        res.status(500).send({"error": "Internal Server error"});
+        res.status(500).send({ "error": "Internal Server error" });
     }
 });
 
@@ -124,6 +126,7 @@ router.post('/updateMatchResult', async (req, res) => {
             { tournamentPin: pin, 'matches.number': matchNumber },
             { 'matches.$': 1 }
         );
+        const isNewScore = detailDocument.matches[0].winner === "";
 
         let winnerScore = Math.max(score1, score2);
         let winner = detailDocument.matches[0].team1;
@@ -152,6 +155,28 @@ router.post('/updateMatchResult', async (req, res) => {
                 }
             }
         );
+        await Detail.updateOne(
+            { tournamentPin: pin }, { $set: { lastMatch: matchNumber } }
+        );
+
+        console.log(isNewScore);
+        if (isNewScore) {
+            const winnerTeam = await Detail.findOne({ tournamentPin: pin, 'teams.name': winner },
+                { 'teams.$': 1 }
+            );
+            const points = winnerTeam.teams[0].points;
+
+            await Detail.updateOne(
+                {
+                    tournamentPin: pin, 'teams.name': winner
+                },
+                {
+                    $set: {
+                        'teams.$.points': points + 2
+                    }
+                }
+            );
+        }
 
         res.status(201).json(pin);  // 
 
@@ -166,7 +191,7 @@ router.post('/updateMatchVenue', async (req, res) => {
 
     try {
         const { matchNumber, venue, pin } = req.body;
-        
+
         const doc = await Detail.updateOne(
             { tournamentPin: pin, 'matches.number': matchNumber },
             {
@@ -196,23 +221,23 @@ router.post('/updateMatchDate', async (req, res) => {
         const { matchNumber, date, pin } = req.body;
 
         const formattedDate = await formatDate(date);
-        
-        
+
+
         const doc = await Detail.findOne({ tournamentPin: pin, 'matches.number': matchNumber }, { matches: 1, _id: 0 });
-        
+
         const matches = doc.matches;
         const newDate = parseDate(formattedDate);
         let matchTobeChanged;
         let flag = true;
-        
+
         for (let i = 0; i < matches.length; i++) {
             const match = matches[i];
             if (match.number == matchNumber) {
                 matchTobeChanged = matches.splice(i, 1);
             }
         }
-        
-        
+
+
         for (let i = 0; i < matches.length; i++) {
             const match = matches[i];
             match.number = i + 1;
@@ -223,7 +248,7 @@ router.post('/updateMatchDate', async (req, res) => {
                 matchTobeChanged[0].date = formatDate(newDate);
                 flag = false;
             }
-            
+
         }
 
         await Detail.updateOne(

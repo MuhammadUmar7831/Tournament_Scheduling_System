@@ -5,6 +5,11 @@ const DetailSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    lastMatch: {
+        type: Number,
+        require: true,
+        default: 0
+    },
     teams: [{
         name: {
             type: String,
@@ -13,9 +18,6 @@ const DetailSchema = new mongoose.Schema({
         points: {
             type: Number,
             default: 0
-        },
-        lastMatch: {
-            type: String
         }
     }],
     groups: [{
@@ -44,30 +46,30 @@ const DetailSchema = new mongoose.Schema({
             type: String,
             required: true
         },
-        score1:{
+        score1: {
             type: Number,
             require: true,
             default: 0
         },
-        score2:{
+        score2: {
             type: Number,
             require: true,
             default: 0
         },
-        out1:{
+        out1: {
             type: Number,
             default: 0
         },
-        out2:{
+        out2: {
             type: Number,
             default: 0
         },
-        boundries1:{
-            type:Number,
+        boundries1: {
+            type: Number,
             default: 0
         },
-        boundries2:{
-            type:Number,
+        boundries2: {
+            type: Number,
             default: 0
         },
         winner: {

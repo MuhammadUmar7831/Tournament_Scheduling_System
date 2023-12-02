@@ -11,7 +11,7 @@ const Navbar = () => {
           <li className='p-2 text-white hover:text-amber-400'><Link to="/scheduleTournament">Schedule Tournament</Link></li>
         </ul>
         <div className='flex mx-3 my-1'>
-          <img src="../../logo.png" alt="" className='drop-shadow'/>
+          <img src="../../logo.png" alt="" className='drop-shadow' />
           <span className='urdu mx-2 m-auto text-3xl text-white'>کھیل</span>
         </div>
       </div>

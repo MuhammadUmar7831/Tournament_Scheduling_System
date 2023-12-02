@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ST_page1 from './ST_page1'
 import ST_page2 from './ST_page2'
 import ST_page3 from './ST_page3'
+import Navbar from '../Navbar'
 
 export default function ScheduleTournament() {
     const [currPage, setCurrPage] = useState(1);
@@ -18,8 +19,8 @@ export default function ScheduleTournament() {
 
     return (
         <>
-            {/* {currPage == 1 && <ST_page1 nextPage={nextPage} />}
-            {currPage == 2 && <ST_page2 prevPage={prevPage} nextPage={nextPage} />} */}
+            <Navbar />
+
             <div style={{ display: currPage === 1 ? 'block' : 'none' }}>
                 <ST_page1 nextPage={nextPage} />
             </div>

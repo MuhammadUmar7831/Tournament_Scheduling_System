@@ -1,4 +1,6 @@
-import React, {useEffect} from 'react'
+import React, { useState, useContext } from 'react'
+import ScheduleContext from '../../context/ScheduleContext';
+import UpdateMatch from '../UpdateMatch';
 
 export default function Match(props) {
 
@@ -7,24 +9,27 @@ export default function Match(props) {
         const day = parseInt(dateParts[0], 10);
         const month = parseInt(dateParts[1], 10);
         const year = parseInt(dateParts[2], 10);
-      
+
         // Create a Date object with the parsed values
         const formattedDate = new Date(year, month - 1, day);
-      
+
         // Options for formatting the date
         const options = { day: 'numeric', month: 'short', year: 'numeric' };
-      
+
         // Format the date using the options
         const result = formattedDate.toLocaleDateString('en-US', options);
-      
+
         return result;
-      }
+    }
+
+    const [updateDisplay, setUpdateDisplay] = useState('hidden');
+    const { pin } = useContext(ScheduleContext);
 
     return (
         <>
             <div className='w-11/12 lg:w-5/12 bg-yellow-100 h-48 mx-auto rounded-md border border-gray-200 m-5'>
                 <div className='flex  justify-between w-full h-1/4 rounded-t-md p-2'>
-                    <span className='text-gray-600'>Match#{props.match.number}</span>
+                    <span className='text-gray-600 font-bold'>Match#{props.match.number}</span>
                     <span className='text-gray-600'>{formatDate(props.match.date)}</span>
                 </div>
 
@@ -43,13 +48,24 @@ export default function Match(props) {
                 </div>
 
                 <div className='flex  justify-between w-full h-1/4 p-2'>
-                    <span className='text-gray-400'>{props.match.venue}</span>
+                    <span className='text-gray-400 font-semibold'>{props.match.venue}</span>
                     <div>
-                        <button type="button" className="text-white w-10 h-5 bg-amber-600 hover:bg-amber-700 rounded-md text-sm text-center me-2 ">edit</button>
-                        <button type="button" className="text-white w-14 h-5 bg-yellow-600 hover:bg-yellow-700 rounded-md text-sm text-center me-2 ">update</button>
+                        {(props.lastMatch + 1 === props.match.number || props.lastMatch === props.match.number) && (
+                            <>
+                                <button disabled={!props.pinAuth} type="button" className="text-white w-10 h-6 bg-amber-600 hover:bg-amber-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
+                                    edit
+                                </button>
+                                <button onClick={() => { setUpdateDisplay(''); }} disabled={!props.pinAuth} type="button" className="text-white w-14 h-6 bg-yellow-600 hover:bg-yellow-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
+                                    update
+                                </button>
+                            </>
+                        )}
+
                     </div>
                 </div>
             </div>
+
+            <UpdateMatch display={updateDisplay} setDisplay={setUpdateDisplay} match={props.match} pin={pin} />
         </>
     )
 }
