@@ -11,9 +11,12 @@ export default function TournamentCard({ schedule }) {
 
     const handleClick = () => {
         setPin(schedule.pin);
-        if (schedule.format == 'Round Robin') {
-            navigate('/viewFixtures');
-        }
+        // if (schedule.format === 'Round Robin') {
+            navigate('/roundrobin/viewFixtures');
+        // }
+        // // else if (schedule.format === 'Group Stage'){
+            // navigate('/groupstage/viewFixtures');s
+        // }
     }
 
     return (

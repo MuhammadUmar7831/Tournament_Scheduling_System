@@ -18,6 +18,14 @@ const DetailSchema = new mongoose.Schema({
         points: {
             type: Number,
             default: 0
+        },
+        boundries: {
+            type: Number,
+            default: 0
+        },
+        nextStage: {
+            type: Number,
+            default: 0
         }
     }],
     groups: [{

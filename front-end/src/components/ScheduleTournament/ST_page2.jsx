@@ -40,7 +40,6 @@ export default function ST_page2(props) {
 
     const handleDateChange = (newDates) => {
         setDates(newDates);
-        console.log(newDates);
     };
 
     return (

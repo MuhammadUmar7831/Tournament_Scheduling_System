@@ -10,21 +10,25 @@ export default function () {
         getDetail(pin);
     }, [pin, detail]);
 
-    useEffect(() => {
-        console.log(detail.teams);
-    }, []);
+    const sortedTeams = detail.teams.sort((a, b) => {
+        // First, compare by points
+        if (b.points !== a.points) {
+            return b.points - a.points;
+        }
 
-    const sortedTeams = detail.teams.sort((a, b) => b.points - a.points);
+        // If points are equal, compare by boundaries
+        return b.boundries - a.boundries;
+    });
 
     return (
         <>
             <div className={`flex w-full h-20 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500`}>
                 <div className='h-full flex items-center justify-center'>
-                    <img onClick={() => { navigate('/viewTournament') }} src="back.png" className='w-10 h-10 hover:cursor-pointer' alt="" srcSet="" />
+                    <img onClick={() => { navigate('/viewTournament') }} src="../../../public/back.png" className='w-10 h-10 hover:cursor-pointer' alt="" srcSet="" />
                 </div>
-                <div className="flex items-center justify-between h-4/5 w-2/4 m-auto">
-                    <p onClick={() => { navigate('/viewFixtures') }} className="mx-2 self-end text-white text-lg md:text-xl lg:text-xl border-b-4 border-b-yellow-500 hover:text-amber-400 hover:cursor-pointer hover:border-b-amber-400">Fixtures</p>
-                    <p className="mx-2 self-end text-white text-lg md:text-xl lg:text-xl border-b-4 border-b-red-500 hover:text-amber-400 hover:cursor-pointer hover:border-b-amber-400">Standings</p>
+                <div className="flex items-center justify-between h-full w-2/4 m-auto">
+                    <p onClick={() => { navigate('/roundrobin/viewFixtures') }} className="mx-2 self-end text-white text-lg md:text-xl lg:text-xl border-b-4 border-b-yellow-500 hover:text-amber-400 hover:cursor-pointer hover:border-b-amber-400">Fixtures</p>
+                    <p className="mx-2 self-end text-white text-lg md:text-xl lg:text-xl border-b-4 border-b-white hover:text-amber-400 hover:cursor-pointer hover:border-b-amber-400">Standings</p>
                 </div>
             </div>
 
@@ -40,6 +44,9 @@ export default function () {
                                 <th scope="col" class="px-6 py-3 text-center">
                                     Points
                                 </th>
+                                <th scope="col" class="px-6 py-3 text-center">
+                                    Boundries
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,6 +57,9 @@ export default function () {
                                     </th>
                                     <td class="px-6 py-4 text-center text-black">
                                         {team.points}
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.boundries}
                                     </td>
                                 </tr>
                             ))}

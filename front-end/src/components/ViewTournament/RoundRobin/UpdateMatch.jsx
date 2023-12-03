@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
-import ViewContext from '../context/ViewContext';
+import ViewContext from '../../context/ViewContext';
 import LoadingBar from 'react-top-loading-bar'
 
 
 export default function (props) {
 
-    const { updateMatchResult } = useContext(ViewContext);
+    const { updateMatchResult, queueNextStage } = useContext(ViewContext);
     const [progress, setProgress] = useState(0);
 
 
@@ -16,7 +16,11 @@ export default function (props) {
         const formData = new FormData(e.target);
         setProgress(20);
 
-        
+        if (props.match.number === props.matches.length - 3) {
+            await queueNextStage(props.pin);
+        }
+
+
         const score1 = formData.get('score1');
         const out1 = formData.get('out1');
         const boundries1 = formData.get('boundries1');

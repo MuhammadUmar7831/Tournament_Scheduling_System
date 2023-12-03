@@ -4,7 +4,7 @@ import Home from './components/Home'
 import ScheduleTournament from './components/ScheduleTournament/ScheduleTournament'
 import ViewTournament from './components/ViewTournament/ViewTournament'
 import RoundRobin from './components/ViewTournament/RoundRobin/RoundRobin'
-import Standing from './components/ViewTournament/RoundRobin/Standing'
+import RRStanding from './components/ViewTournament/RoundRobin/RRStanding'
 
 import ScheduleUseState from './components/context/ScheduleUseState'
 import ViewUseState from './components/context/ViewUseState'
@@ -23,8 +23,10 @@ function App() {
               <Route path="/" element={<Home />}></Route>
               <Route path="/scheduleTournament" element={<ScheduleTournament />}></Route>
               <Route path="/viewTournament" element={<ViewTournament />}></Route>
-              <Route path="/viewFixtures" element={<RoundRobin />}></Route>
-              <Route path="/viewStandings" element={<Standing />}></Route>
+
+              <Route path="/roundrobin/viewFixtures" element={<RoundRobin />}></Route>
+              <Route path="/roundrobin/viewStandings" element={<RRStanding />}></Route>
+
             </Routes>
 
           </ViewUseState>
