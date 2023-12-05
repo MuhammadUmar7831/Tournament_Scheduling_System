@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Datepicker from "react-tailwindcss-datepicker";
 import AddVenue from './AddVenue';
 import ScheduleContext from '../context/ScheduleContext';
@@ -8,12 +8,13 @@ export default function ST_page2(props) {
     const [inputValue, setInputValue] = useState('');
     const [alert, setAlert] = useState('hidden');
 
-    const {setNoTeams, venues} = useContext(ScheduleContext);
-    const {setTeamNames} = useContext(ScheduleContext);
-    const {dates, setDates} = useContext(ScheduleContext);
+    const { setNoTeams, venues } = useContext(ScheduleContext);
+    const { setTeamNames } = useContext(ScheduleContext);
+    const { dates, setDates } = useContext(ScheduleContext);
+    const { matchFormat, setMatchFormat, noteams } = useContext(ScheduleContext);
 
     const goToNext = () => {
-        if (inputValue != '' && venues.length > 0) {
+        if (inputValue != '' && venues.length > 0 && matchFormat !== '' && dates !== null) {
             props.nextPage();
         } else {
             setAlert('flex')
@@ -26,20 +27,32 @@ export default function ST_page2(props) {
         setInputValue('0');
         setTeamNames([]);
 
-        if (value === '' || parseInt(value) <= 1) {
-            setInputValue('2');
-            setNoTeams(2);
-        } else if (value > 100) {
-            setInputValue('100');
-            setNoTeams(100);
+        if (value === '' || parseInt(value) < 4) {
+            setInputValue('4');
+            setNoTeams(4);
+        } else if (value > 65) {
+            setInputValue('64');
+            setNoTeams(64);
         } else {
             setInputValue(value);
             setNoTeams(value);
         }
+
+        const isPowerOfTwo = Number.isInteger(Math.log2(value));
+
+        if (matchFormat !== "Round Robin" && !isPowerOfTwo) {
+            setMatchFormat('');
+        }
+
     };
 
     const handleDateChange = (newDates) => {
         setDates(newDates);
+    };
+
+    const handleRadioChange = (event) => {
+        const value = event.target.value;
+        setMatchFormat(value);
     };
 
     return (
@@ -65,7 +78,7 @@ export default function ST_page2(props) {
                 <div>
                     <label htmlFor="visitors" className="block my-2 text-sm font-medium text-gray-900 dark:text-white">Number of Teams</label>
                     <input type="number" id="visitors" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="1 < x < 101" required min={2} value={inputValue} onInput={handleInputChange} />
+                        placeholder="3 < x < 65" required min={2} value={inputValue} onInput={handleInputChange} />
                 </div>
 
 
@@ -81,6 +94,28 @@ export default function ST_page2(props) {
                 />
 
                 <AddVenue />
+
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Match Format</h3>
+                <ul className="items-center w-full my-2 text-sm font-medium text-gray-900  bg-white shadow border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                        <div className="flex items-center pl-3">
+                            <input onChange={handleRadioChange} defaultChecked={true} id="horizontal-list-radio-round" type="radio" value="Round Robin" name="list-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                            <label htmlFor="horizontal-list-radio-round" className="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Round Robin</label>
+                        </div>
+                    </li>
+                    <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                        <div className="flex items-center pl-3">
+                            <input onChange={handleRadioChange} disabled={!Number.isInteger(Math.log2(noteams))} checked={matchFormat === 'Group Stage' && Number.isInteger(Math.log2(noteams))} id="horizontal-list-radio-group" type="radio" value="Group Stage" name="list-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                            <label htmlFor="horizontal-list-radio-group" className={`w-full py-3 ml-2 text-sm font-medium text-gray-${!Number.isInteger(Math.log2(noteams)) ? '400' : '900'} dark:text-gray-300`}>Group Stage</label>
+                        </div>
+                    </li>
+                    <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                        <div className="flex items-center pl-3">
+                            <input onChange={handleRadioChange} disabled={!Number.isInteger(Math.log2(noteams))} checked={matchFormat === 'Knock out' && Number.isInteger(Math.log2(noteams))} id="horizontal-list-radio-knock" type="radio" value="Knock out" name="list-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                            <label htmlFor="horizontal-list-radio-knock" className={`w-full py-3 ml-2 text-sm font-medium text-gray-${!Number.isInteger(Math.log2(noteams)) ? '400' : '900'} dark:text-gray-300`}>Knock out</label>
+                        </div>
+                    </li>
+                </ul>
 
 
                 <div className='flex justify-between'>

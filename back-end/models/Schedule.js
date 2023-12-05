@@ -9,6 +9,16 @@ const ScheduleSchema = new mongoose.Schema({
     venues: { type: [String], default: [] },
     teams: { type: [String], default: [] },
     format: { type: String, required: true },
+    times: {
+        startingTimes: [{
+            type: String,
+            required: true
+        }],
+        endingTimes: [{
+            type: String,
+            required: true
+        }]
+    },
     pin: { type: String, required: true },
 })
 

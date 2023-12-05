@@ -12,7 +12,7 @@ function shuffle(array) {
 }
 
 // Helper function to generate all possible combinations of teams
-function generateTeamCombinations(teams, startDate, endDate, venues) {
+function generateTeamCombinationsRR(teams, startDate, endDate, venues, times) {
 
     let teamsCopy = [...teams];
     let venueIndex = 0;
@@ -24,27 +24,28 @@ function generateTeamCombinations(teams, startDate, endDate, venues) {
 
     let matchNumber = 1;
 
+
     for (let i = 0; i < teamsCopy.length - 1; i++) {
         let second = teamsCopy.length - 1;
 
         for (let j = 0; j < teamsCopy.length / 2; j++, second--) {
             if (teamsCopy[j] !== "bye" && teamsCopy[second] !== "bye") {
-                combinations.push({ number: matchNumber, team1: teamsCopy[j], team2: teamsCopy[second], winner: "", date: "", venue: venues[venueIndex++ % venues.length] })
+                combinations.push({ number: matchNumber, team1: teamsCopy[j], team2: teamsCopy[second], winner: "", date: "", venue: venues[venueIndex++ % venues.length], time: { startTime: "", endTime: "" } })
                 matchNumber++;
             }
         }
         teamsCopy = shuffle(teamsCopy);
     }
 
-    combinations.push({ number: matchNumber++, team1: "Qualifier 1", team2: "Qualifier 4", date: "", venue: venues[venueIndex++ % venues.length] });
-    combinations.push({ number: matchNumber++, team1: "Qualifier 2", team2: "Qualifier 3", date: "", venue: venues[venueIndex++ % venues.length] });
+    combinations.push({ number: matchNumber++, team1: "Qualifier 1", team2: "Qualifier 4", date: "", venue: venues[venueIndex++ % venues.length], time: { startTime: "", endTime: "" } });
+    combinations.push({ number: matchNumber++, team1: "Qualifier 2", team2: "Qualifier 3", date: "", venue: venues[venueIndex++ % venues.length], time: { startTime: "", endTime: "" } });
 
-    combinations.push({ number: matchNumber++, team1: "Finalist 1", team2: "Finalist 2", date: "", venue: venues[venueIndex++ % venues.length] });
+    combinations.push({ number: matchNumber++, team1: "Finalist 1", team2: "Finalist 2", date: "", venue: venues[venueIndex++ % venues.length], time: { startTime: "", endTime: "" } });
 
-    distributeMatches(combinations, startDate, endDate);
+    distributeMatches(combinations, startDate, endDate, times);
 
     return combinations;
 }
 
 
-module.exports = { generateTeamCombinations };
+module.exports = { generateTeamCombinationsRR };

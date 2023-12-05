@@ -6,11 +6,13 @@ import EnterPin from './EnterPin';
 import Alert from '../Alert';
 import LoadingBar from 'react-top-loading-bar';
 import LastMatchesSection from './LastMatchesSection';
+import ViewContext from '../../context/ViewContext';
 
 
 export default function RoundRobin() {
 
     const { getDetail, detail, pin } = useContext(ScheduleContext);
+    const { activeNextStage, semiFinalStage } = useContext(ViewContext);
     const [pinDisplay, setPinDisplay] = useState('hidden');
     const [pinAuth, setPinAuth] = useState(false);
     const [alertDispaly, setAlertDispaly] = useState('hidden');
@@ -20,11 +22,29 @@ export default function RoundRobin() {
     const [progress, setProgress] = useState(0)
 
     useEffect(() => {
-        setProgress(50);
+        // setProgress(50);
         getDetail(pin);
-        setProgress(100);
+        // setProgress(100);
 
     }, [pin, detail])
+
+    const handleNextStageClick = async () => {
+        setProgress(30);
+        await activeNextStage(pin);
+
+        const sortedTeams = detail.teams.sort((a, b) => {
+            // First, compare by points
+            if (b.points !== a.points) {
+                return b.points - a.points;
+            }
+
+            // If points are equal, compare by boundaries
+            return b.boundries - a.boundries;
+        });
+        setProgress(50);
+        await semiFinalStage(pin, sortedTeams[0].name, sortedTeams[1].name, sortedTeams[2].name, sortedTeams[3].name);
+        setProgress(100);
+    }
 
     return (
         <>
@@ -71,10 +91,11 @@ export default function RoundRobin() {
 
             {(detail) && (detail.matches) && (
                 <div className='w-full flex items-center flex-col'>
-                    {(pinAuth) && (detail.next === 2) && (<button type="button" className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                        Enable Next Stage
-                    </button>)}
-                    <LastMatchesSection matches={detail.matches} lastMatch={detail.lastMatch} pinAuth={pinAuth} nextStage={detail.nextStage} />
+                    {(pinAuth) && (detail.nextStage === 2) && (detail.matches[detail.matches.length - 2].winner === "") && (
+                        <button onClick={handleNextStageClick} type="button" className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                            Enter Semi-finals
+                        </button>)}
+                    <LastMatchesSection matches={detail.matches} lastMatch={detail.lastMatch} pinAuth={pinAuth} nextStage={detail.nextStage} pin={pin}/>
                 </div>
             )}
 

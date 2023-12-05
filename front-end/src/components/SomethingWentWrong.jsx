@@ -6,11 +6,10 @@ export default function () {
 
     const handleClick = () => {
         setSomethingWrong('hidden');
-        document.body.classList.remove('overflow-hidden');
     }
     return (
         <>
-            <div id="modal" className={`${somethingWrong} z- w-[100vw] h-[100vh] absolute top-0 left-0 bg-opacity-30 bg-gray-500`}>
+            <div id="modal" className={`${somethingWrong} z- w-[100vw] h-[100vh] fixed top-0 left-0 bg-opacity-30 bg-gray-500`}>
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 md:p-8 w-2/4 m-auto mt-24">
                     <div className="p-4 md:p-5 text-center">
                         <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">

@@ -12,6 +12,7 @@ app.get('/', (req, res) => {
 
 app.use('/schedules/get', require('./routes/get-routes'));
 app.use('/schedules/post', require('./routes/post-routes'));
+app.use('/schedules/round-robin', require('./routes/round-robin-routes'));
 
 const port = 80;
 app.listen(port, async () => {

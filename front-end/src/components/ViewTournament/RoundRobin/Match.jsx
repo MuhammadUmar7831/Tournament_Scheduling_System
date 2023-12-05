@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import ScheduleContext from '../../context/ScheduleContext';
 import UpdateMatch from './UpdateMatch';
 import EditMatch from './EditMatch';
@@ -32,6 +32,7 @@ export default function Match(props) {
             <div className='w-11/12 lg:w-5/12 bg-yellow-100 h-48 mx-auto rounded-md border border-gray-200 m-5'>
                 <div className='flex  justify-between w-full h-1/4 rounded-t-md p-2'>
                     <span className='text-gray-600 font-bold'>Match#{props.match.number}</span>
+                    <span className='text-gray-600'>{props.match.time.startTime} to {props.match.time.endTime}</span>
                     <span className='text-gray-600'>{formatDate(props.match.date)}</span>
                 </div>
 
@@ -57,17 +58,21 @@ export default function Match(props) {
                                 edit
                             </button>
                         )}
-                        {(props.pinAuth) && (props.lastMatch + 1 === props.match.number || props.lastMatch === props.match.number) && ((props.nextStage === 1 && (props.matches.length - 2 <= props.match.number)) || ((props.matches.length - 2 > props.match.number) && (props.nextStage !== 1))) && (
-                            <button onClick={() => { setUpdateDisplay(''); }} type="button" className="text-white w-14 h-6 bg-yellow-600 hover:bg-yellow-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
-                                update
-                            </button>
-                        )}
+                        {(props.pinAuth)
+                            && (props.lastMatch < props.matches.length)
+                            && (props.lastMatch + 1 === props.match.number || props.lastMatch === props.match.number)
+                            && ((props.nextStage === 1 && (props.matches.length - 2 <= props.match.number)) || ((props.matches.length - 2 > props.match.number) && (props.nextStage !== 1)))
+                            && (((props.nextStage !== 0) && (props.match.number === props.matches.length)) || (props.match.number !== props.matches.length && props.matches[props.matches.length - 2].winner === "")) && (
+                                <button onClick={() => { setUpdateDisplay(''); }} type="button" className="text-white w-14 h-6 bg-yellow-600 hover:bg-yellow-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
+                                    update
+                                </button>
+                            )}
 
                     </div>
                 </div>
             </div>
 
-            <UpdateMatch display={updateDisplay} setDisplay={setUpdateDisplay} match={props.match} pin={pin} matches={props.matches}/>
+            <UpdateMatch display={updateDisplay} setDisplay={setUpdateDisplay} match={props.match} pin={pin} matches={props.matches} />
             <EditMatch display={editMatchDisplay} setDisplay={setEditMatchDisplay} date={props.match.date} venue={props.match.venue} dateLimit={props.matches[props.matches.length - 4].date} match={props.match} pin={pin} />
         </>
     )

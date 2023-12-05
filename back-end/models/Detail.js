@@ -10,6 +10,10 @@ const DetailSchema = new mongoose.Schema({
         require: true,
         default: 0
     },
+    nextStage: {
+        type: Number,
+        default: 0
+    },
     teams: [{
         name: {
             type: String,
@@ -22,24 +26,22 @@ const DetailSchema = new mongoose.Schema({
         boundries: {
             type: Number,
             default: 0
-        },
-        nextStage: {
-            type: Number,
-            default: 0
         }
     }],
     groups: [{
         name: {
             type: String
         },
-        teams: [{
-            name: {
-                type: String
-            },
-            rank: {
-                type: String
-            }
-        }]
+        teams: [
+            //     {
+            //     name: {
+            //         type: String
+            //     },
+            //     rank: {
+            //         type: String
+            //     }
+            // }
+        ]
     }],
     matches: [{
         number: {
@@ -89,6 +91,16 @@ const DetailSchema = new mongoose.Schema({
         },
         venue: {
             type: String
+        },
+        time: {
+            startTime: {
+                type: String,
+                required: true
+            },
+            endTime: {
+                type: String,
+                required: true
+            }
         }
     }]
 })

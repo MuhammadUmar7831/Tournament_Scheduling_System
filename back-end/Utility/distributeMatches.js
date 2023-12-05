@@ -7,7 +7,7 @@ function parseDate(dateString) {
 }
 
 
-function distributeMatches(matches, startDate, endDate) {
+function distributeMatches(matches, startDate, endDate, times) {
 
     const startDateObj = parseDate(startDate);
     const endDateObj = parseDate(endDate);
@@ -21,12 +21,17 @@ function distributeMatches(matches, startDate, endDate) {
 
     let matchNumber = 0;
     let length = matches.length;
+    let timesIndex = 0;
 
     while (totalDays > 0) {
         const matchesForDay = Math.min(matchesPerDay, length); // Handle the last day
-        for (let i = 1; i <= matchesForDay; i++) {
+        for (let i = 1; i <= matchesForDay; i++, timesIndex++) {
+            matches[matchNumber].time.startTime = times.startingTimes[timesIndex % times.startingTimes.length];
+            matches[matchNumber].time.endTime = times.endingTimes[timesIndex % times.endingTimes.length];
+
             matches[matchNumber++].date = formatDate(new Date(currentDate));
         }
+        timesIndex = 0;
         currentDate.setDate(currentDate.getDate() + 1);
         length -= matchesForDay;
         matchesPerDay = Math.round(length / --totalDays);

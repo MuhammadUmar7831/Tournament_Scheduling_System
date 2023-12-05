@@ -49,12 +49,12 @@ const ScheduleUseState = (props) => {
                     venues: venues,
                     teams: teamNames,
                     format: matchFormat,
+                    times: {startingTimes, endingTimes}
                 }),
             });
 
             if (!response.ok) {
                 // Check if the response status is not in the range 200-299
-                // throw new Error(`HTTP error! Status: ${response.status}`);
                 throw "Something went wrong"
             }
             else {
@@ -71,15 +71,18 @@ const ScheduleUseState = (props) => {
 
     const [schedules, setSchedules] = useState([]);
     const [detail, setDetail] = useState(null);
-    const [pin, setPin] = useState('')
+    const [pin, setPin] = useState('');
+
+
+    const [noTimeSlots, setNoTimeSlots] = useState(0);
+    const [startingTimes, setStartingTimes] = useState(Array.from({ length: noTimeSlots }, () => '1:00 AM'));
+    const [endingTimes, setEndingTimes] = useState(Array.from({ length: noTimeSlots }, () => '1:00 AM'));
+
 
     const [tournamentName, setTournamentName] = useState('');
     const [selectedSport, setSelectedSport] = useState('Cricket');
     const [matchFormat, setMatchFormat] = useState('Round Robin')
-    const [dates, setDates] = useState({
-        startDate: new Date(),
-        endDate: new Date()
-    })
+    const [dates, setDates] = useState(null);
 
     const [noteams, setNoTeams] = useState(0);
     const [venues, setVenues] = useState([]);
@@ -96,7 +99,7 @@ const ScheduleUseState = (props) => {
         });
     };
     return (
-        <ScheduleContext.Provider value={{ setTournamentName, setSelectedSport, noteams, setNoTeams, dates, setDates, venues, addNewVenue, removeVenue, teamNames, setTeamNames, setMatchFormat, matchFormat, getSchedules, schedules, addSchedule, somethingWrong, setSomethingWrong, getDetail, detail, pin, setPin }}>
+        <ScheduleContext.Provider value={{ setTournamentName, setSelectedSport, noteams, setNoTeams, dates, setDates, venues, addNewVenue, removeVenue, teamNames, setTeamNames, setMatchFormat, matchFormat, getSchedules, schedules, addSchedule, somethingWrong, setSomethingWrong, getDetail, detail, pin, setPin, noTimeSlots, startingTimes, endingTimes, setNoTimeSlots, setStartingTimes, setEndingTimes }}>
             {props.children}
         </ScheduleContext.Provider>
     );

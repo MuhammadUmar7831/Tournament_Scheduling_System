@@ -19,7 +19,9 @@ export default function (props) {
         if (props.match.number === props.matches.length - 3) {
             await queueNextStage(props.pin);
         }
-
+        else if (props.match.number === props.matches.length - 1) {
+            await queueNextStage(props.pin);
+        }
 
         const score1 = formData.get('score1');
         const out1 = formData.get('out1');
