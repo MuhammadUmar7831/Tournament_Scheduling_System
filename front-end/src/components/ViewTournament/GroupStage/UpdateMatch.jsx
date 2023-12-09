@@ -24,7 +24,6 @@ export default function (props) {
         const formData = new FormData(e.target);
         setProgress(20);
 
-        console.log(props.match.number, stageLastMatch());
         if (props.match.number === stageLastMatch()) {
             await queueNextStage(props.pin);
         }

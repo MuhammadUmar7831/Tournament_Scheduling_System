@@ -69,10 +69,95 @@ const GroupStageUseState = (props) => {
             return "error";
         }
     };
+    
+    const deActiveNextStage = async (pin) => {
+        try {
+            const url = `${host}/schedules/group-stage/deActiveNextStage`;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Specify the content type
+                },
+                body: JSON.stringify({
+                    pin
+                }),
+            });
+
+            if (!response.ok) {
+                throw "Something went wrong"
+            }
+            else {
+                const json = await response.json();
+                return json;
+            }
+
+        } catch (error) {
+            console.log("error occured");
+            return "error";
+        }
+    };
+    
+    const gotoNextStage = async (tournamentPin, matchNumber) => {
+        try {
+            const url = `${host}/schedules/group-stage/gotoNextStage`;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Specify the content type
+                },
+                body: JSON.stringify({
+                    tournamentPin,
+                    matchNumber
+                }),
+            });
+
+            if (!response.ok) {
+                throw "Something went wrong"
+            }
+            else {
+                const json = await response.json();
+                return json;
+            }
+
+        } catch (error) {
+            console.log("error occured");
+            return "error";
+        }
+    };
+    
+    const activateFinalStage = async (pin) => {
+        try {
+            const url = `${host}/schedules/group-stage/activateFinalStage`;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Specify the content type
+                },
+                body: JSON.stringify({
+                    pin
+                }),
+            });
+
+            if (!response.ok) {
+                throw "Something went wrong"
+            }
+            else {
+                const json = await response.json();
+                return json;
+            }
+
+        } catch (error) {
+            console.log("error occured");
+            return "error";
+        }
+    };
 
 
     return (
-        <GroupStageContext.Provider value={{ updateMatchResult, queueNextStage}}>
+        <GroupStageContext.Provider value={{ updateMatchResult, queueNextStage, gotoNextStage, deActiveNextStage, activateFinalStage}}>
             {props.children}
         </GroupStageContext.Provider>
     );

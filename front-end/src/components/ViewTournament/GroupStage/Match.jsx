@@ -30,17 +30,6 @@ export default function Match(props) {
     const [team1, setTeam1] = useState('')
     const [team2, setTeam2] = useState('')
 
-    // useEffect(() => {
-    //     for (let i = 0; i < props.teams.length; i++) {
-    //         if (props.match.team1 === props.teams[i].name) {
-    //             setTeam1(props.teams[i]);
-    //         }
-    //         if (props.match.team2 === props.teams[i].name) {
-    //             setTeam2(props.teams[i]);
-    //         }
-    //     }
-    // }, [])
-
     useEffect(() => {
         for (let i = 0; i < props.teams.length; i++) {
             if (props.match.team1 === props.teams[i].name) {
@@ -60,6 +49,35 @@ export default function Match(props) {
         return (isThisTheNewMatchToUpdateNext || isThisMatchLastMatchOfBothTeams || isThisMatchTheLastMatchThatWasUpdates);
     }
 
+    const isThisMatchGroupIsCurrentGroup = () => {
+        let matchNo = 0;
+
+        for (let i = 1; i < props.currentStage; i++) {
+            matchNo += ((props.totalTeams / i) / 4) * 6;
+        }
+
+        return (matchNo < props.match.number);
+    }
+
+    const isMatchNotTBD = () => {
+        return props.match.team1 !== 'TBD';
+    }
+
+    const isFinalMatchOrNextStageIsNot1 = () => {
+        const isFinalMatch = props.matches.length === props.match.number;
+        const nextStageIs1 = props.nextStage === 1;
+        
+        return (!isFinalMatch && !nextStageIs1)||(isFinalMatch && nextStageIs1);
+    }
+
+    useEffect(() => {
+        if (props.match.number === 19) {
+            console.log('isThisMatchTheLastMatchofTeam()', isThisMatchTheLastMatchofTeam());
+            console.log('isThisMatchGroupIsCurrentGroup()', isThisMatchGroupIsCurrentGroup());
+            console.log('isMatchNotTBD()', isMatchNotTBD());
+            console.log('isFinalMatchOrNextStageIsNot1()', isFinalMatchOrNextStageIsNot1());
+        }
+    }, [])
 
     return (
         <>
@@ -87,14 +105,21 @@ export default function Match(props) {
                 <div className='flex  justify-between w-full h-1/4 p-2'>
                     <span className='text-gray-400 font-semibold'>{props.match.venue}</span>
                     <div>
-                        {(props.pinAuth) && (props.lastMatch < props.match.number) && (props.matches.length !== props.match.number) && (
-                            <button onClick={() => { setEditMatchDisplay(''); }} type="button" className="text-white w-10 h-6 bg-amber-600 hover:bg-amber-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
-                                edit
-                            </button>
-                        )}
+                        {(props.pinAuth)
+                            && (props.lastMatch < props.match.number)
+                            && (props.matches.length !== props.match.number)
+                            && isMatchNotTBD()
+                            && (
+                                <button onClick={() => { setEditMatchDisplay(''); }} type="button" className="text-white w-10 h-6 bg-amber-600 hover:bg-amber-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
+                                    edit
+                                </button>
+                            )}
                         {(props.pinAuth && team1 && team2)
                             && (props.lastMatch < props.matches.length)
                             && isThisMatchTheLastMatchofTeam()
+                            && isThisMatchGroupIsCurrentGroup()
+                            && isMatchNotTBD()
+                            && isFinalMatchOrNextStageIsNot1()
                             && (
                                 <button onClick={() => { setUpdateDisplay(''); }} type="button" className="text-white w-14 h-6 bg-yellow-600 hover:bg-yellow-700 rounded-md text-sm text-center font-bold me-2 shadow-md shadow-red-900">
                                     update
@@ -105,7 +130,7 @@ export default function Match(props) {
                 </div>
             </div>
 
-            <UpdateMatch display={updateDisplay} setDisplay={setUpdateDisplay} match={props.match} pin={pin} matches={props.matches} currentStage={props.currentStage} totalTeams={props.totalTeams}/>
+            <UpdateMatch display={updateDisplay} setDisplay={setUpdateDisplay} match={props.match} pin={pin} matches={props.matches} currentStage={props.currentStage} totalTeams={props.totalTeams} />
             <EditMatch display={editMatchDisplay} setDisplay={setEditMatchDisplay} date={props.match.date} venue={props.match.venue} dateLimit={props.matches[props.matches.length - 4].date} match={props.match} pin={pin} />
         </>
     )

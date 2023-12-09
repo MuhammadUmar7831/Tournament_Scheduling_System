@@ -7,12 +7,14 @@ import Alert from '../Alert';
 import LoadingBar from 'react-top-loading-bar';
 import LastMatchesSection from './LastMatchesSection';
 import ViewContext from '../../context/ViewContext';
+import GroupStageContext from '../../context/GroupStageContext';
 
 
-export default function RoundRobin() {
+export default function GroupStage() {
 
     const { getDetail, detail, pin } = useContext(ScheduleContext);
     const { activeNextStage, semiFinalStage } = useContext(ViewContext);
+    const { gotoNextStage, deActiveNextStage } = useContext(GroupStageContext);
     const [pinDisplay, setPinDisplay] = useState('hidden');
     const [pinAuth, setPinAuth] = useState(false);
     const [alertDispaly, setAlertDispaly] = useState('hidden');
@@ -57,8 +59,12 @@ export default function RoundRobin() {
         return matchNo === match.number;
     }
 
-    const gotoNextStage = () => {
-
+    async function handelNextStageClick (matchNumber) {
+        setProgress(30);
+        await gotoNextStage(pin, matchNumber + 1);
+        setProgress(70);
+        await deActiveNextStage(pin);
+        setProgress(100);
     }
 
     return (
@@ -103,11 +109,15 @@ export default function RoundRobin() {
                         <React.Fragment key={match.number}>
                             <Match match={match} pinAuth={pinAuth} matches={detail.matches} lastMatch={detail.lastMatch} nextStage={detail.nextStage} teams={detail.teams} currentStage={detail.currentStage} totalTeams={detail.teams.length} />
 
-                            {(isNextStageButtonShow(match)) && (pinAuth) && (detail.nextStage !== 0) &&
+                            {(isNextStageButtonShow(match)) 
+                            && (pinAuth) 
+                            && (detail.nextStage !== 0) 
+                            && (match.number !== detail.matches.length - 1)
+                            &&
                                 (
                                     <div className='w-full text-center p-2'>
                                         <button
-                                            onClick={gotoNextStage}
+                                            onClick={() => handelNextStageClick(match.number)}
                                             type="button"
                                             className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                         >
