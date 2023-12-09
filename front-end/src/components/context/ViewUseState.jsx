@@ -189,6 +189,38 @@ const ViewUseState = (props) => {
             return "error";
         }
     };
+    
+    
+    const editMatchTime = async (matchNumber, pin, time) => {
+        try {
+            const url = `${host}/schedules/post/updateMatchTime`;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Specify the content type
+                },
+                body: JSON.stringify({
+                    matchNumber,
+                    pin,
+                    time
+                }),
+            });
+
+            if (!response.ok) {
+                // Check if the response status is not in the range 200-299
+                throw "Something went wrong"
+            }
+            else {
+                const json = await response.json();
+                return json;
+            }
+
+        } catch (error) {
+            console.log("error occured");
+            return "error";
+        }
+    };
 
 
     const semiFinalStage = async (pin, team1, team2, team3, team4) => {
@@ -256,7 +288,7 @@ const ViewUseState = (props) => {
     };
 
     return (
-        <ViewContext.Provider value={{ updateMatchResult, editMatchDate, editMatchVenue, queueNextStage, activeNextStage, deActiveNextStage, semiFinalStage, finalStage }}>
+        <ViewContext.Provider value={{ updateMatchResult, editMatchDate, editMatchVenue, editMatchTime, queueNextStage, activeNextStage, deActiveNextStage, semiFinalStage, finalStage }}>
             {props.children}
         </ViewContext.Provider>
     );

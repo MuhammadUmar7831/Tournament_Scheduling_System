@@ -1,46 +1,12 @@
 const { generateTeamCombinationsRR } = require('../Matches_Generators/roundRobin');
 const { distributeMatches } = require('../Utility/distributeMatches');
 
-
-function generateGroupTeamCombinations(groups, teams, startDate, endDate, venues) {
-    const g = groups.length / 4;
-    const combinations = [];
-
-    for (let i = 0; i < g; i++) {
-        const currentGroup = groups.slice(i * 4, (i + 1) * 4);
-        const groupCombinations = generateTeamCombinations1(currentGroup, startDate, endDate, venues);
-        combinations.push(...groupCombinations);
-    }
-    let venueIndex = 0;
-    let matchNumber = 1;
-    console.log("sad3");
-    let g1 = groups.length / 2;
-    g1 /= 2;
-    console.log("sad4");
-    while (g1 >= 1) {
-        for (let j = 0; j < g1; j++) {
-            combinations.push({
-                number: matchNumber,
-                team1: "TBD",
-                team2: "TBD",
-                winner: "",
-                date: "",
-                venue: venues[venueIndex++ % venues.length]
-            });
-            matchNumber++;
-        }
-        g1 /= 2;
-    }
-
-    return combinations;
-}
-
-
 function generateGroupTeamCombinationsGG(groups, teams, startDate, endDate, venues, times) {
 
     let separateMatches = [];
     for (let i = 0; i < groups.length; i++) {
-        separateMatches.push(generateTeamCombinationsRR(groups[i].teams, startDate, endDate, venues, times).slice(0, -3));
+        const teamNames = groups[i].teams.map(team => team.name);
+        separateMatches.push(generateTeamCombinationsRR(teamNames, startDate, endDate, venues, times).slice(0, -3));
 
     }
     let combinations = [];
@@ -63,14 +29,23 @@ function generateGroupTeamCombinationsGG(groups, teams, startDate, endDate, venu
         count = Math.floor(count / 2);
     }
 
+    let vIndex = 0;
     for (let i = 0; i < totalMatches; i++) {
-        combinations.push({ number: number++, team1: "TBD", team2: "TBD", winner: '', date: '', time: { startDate: '', endTime: '' } });
+        combinations.push({ number: number++, team1: "TBD", team2: "TBD", winner: '', date: '', venue: venues[vIndex++ % venues.length], time: { startDate: '', endTime: '' } });
     }
-    combinations.push({ number: number++, team1: "Finalist 1", team2: "Finalist 2", winner: '', date: '', time: { startDate: '', endTime: '' } });
+    combinations.push({ number: number++, team1: "Finalist 1", team2: "Finalist 2", winner: '', date: '', venue: venues[vIndex++ % venues.length], time: { startDate: '', endTime: '' } });
 
     distributeMatches(combinations, startDate, endDate, times);
-    
+
     return combinations;
 }
 
-module.exports = { generateGroupTeamCombinationsGG };
+function createNextStageGroups(groups){
+
+    let newGroups = [];
+    for (let i = 0 ; i < groups.length; i++){
+        console.log(groups[i]);
+    }
+}
+
+module.exports = { generateGroupTeamCombinationsGG, createNextStageGroups };

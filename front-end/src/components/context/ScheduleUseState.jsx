@@ -75,8 +75,8 @@ const ScheduleUseState = (props) => {
 
 
     const [noTimeSlots, setNoTimeSlots] = useState(0);
-    const [startingTimes, setStartingTimes] = useState(Array.from({ length: noTimeSlots }, () => '1:00 AM'));
-    const [endingTimes, setEndingTimes] = useState(Array.from({ length: noTimeSlots }, () => '1:00 AM'));
+    const [startingTimes, setStartingTimes] = useState([]);
+    const [endingTimes, setEndingTimes] = useState([]);
 
 
     const [tournamentName, setTournamentName] = useState('');

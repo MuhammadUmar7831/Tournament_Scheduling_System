@@ -77,7 +77,7 @@ export default function AddVenue() {
             </div>
 
 
-            <div id="modal" className='hidden w-[100vw] h-[100vh] absolute top-0 left-0 bg-opacity-30 bg-gray-500'>
+            <div id="modal" className='hidden w-[100vw] h-[100vh] fixed top-0 left-0 bg-opacity-30 bg-gray-500'>
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 md:p-8 w-2/3 m-auto mt-24">
                     <form onSubmit={addVenue}>
                         <div className="mb-6">

@@ -14,6 +14,10 @@ const DetailSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    currentStage: {
+        type: Number,
+        default: 1
+    },
     teams: [{
         name: {
             type: String,
@@ -26,22 +30,35 @@ const DetailSchema = new mongoose.Schema({
         boundries: {
             type: Number,
             default: 0
+        },
+        lastMatch: {
+            type: Number,
+            require: true,
+            default: 0
         }
     }],
     groups: [{
         name: {
             type: String
         },
-        teams: [
-            //     {
-            //     name: {
-            //         type: String
-            //     },
-            //     rank: {
-            //         type: String
-            //     }
-            // }
-        ]
+        stage: {
+            type: Number,
+            default: 1
+        },
+        teams: [{
+            name: {
+                type: String,
+                required: true
+            },
+            points: {
+                type: Number,
+                default: 0
+            },
+            boundries: {
+                type: Number,
+                default: 0
+            }
+        }]
     }],
     matches: [{
         number: {

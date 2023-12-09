@@ -110,12 +110,10 @@ export default function ST_page3(props) {
 
                 // Update the state variables
                 await setNoTimeSlots(newNoTimeSlots);
-                setStartingTimes(Array.from({ length: newNoTimeSlots }, () => '1:00 AM'));
-                setEndingTimes(Array.from({ length: newNoTimeSlots }, () => '1:00 AM'));
             }
         };
         asyncFunc();
-    }, [dates, matchFormat]);
+    }, [dates, matchFormat, startingTimes, endingTimes]);
 
     return (
         <>
@@ -154,14 +152,14 @@ export default function ST_page3(props) {
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                         Time Slots
                     </h5>
-                    {Array.from({ length: noTimeSlots }, (_, index) => (
+                    {(startingTimes && endingTimes) && (startingTimes.length !== 0 && endingTimes.length !== 0) && (Array.from({ length: noTimeSlots }, (_, index) => (
                         <>
                             <div key={`div-${index}`} className='w-3/4 mx-auto flex'>
                                 <Timepicker key={`start-${index}`} header={`Slot ${index + 1} Start Time`} time={startingTimes} setTime={setStartingTimes} index={index} />
                                 <Timepicker key={`end-${index}`} header={`Slot ${index + 1} End Time`} time={endingTimes} setTime={setEndingTimes} index={index} />
                             </ div>
                         </>
-                    ))}
+                    )))}
                 </div>
 
                 <div id='venue' className="block my-2 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">

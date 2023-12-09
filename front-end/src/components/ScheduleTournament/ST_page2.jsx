@@ -3,6 +3,11 @@ import Datepicker from "react-tailwindcss-datepicker";
 import AddVenue from './AddVenue';
 import ScheduleContext from '../context/ScheduleContext';
 
+import DayStartEnd from './DayStartEnd'
+import Duration from './Duration';
+
+import { generateSlots } from '../../utilities/utilities';
+
 export default function ST_page2(props) {
 
     const [inputValue, setInputValue] = useState('');
@@ -12,8 +17,16 @@ export default function ST_page2(props) {
     const { setTeamNames } = useContext(ScheduleContext);
     const { dates, setDates } = useContext(ScheduleContext);
     const { matchFormat, setMatchFormat, noteams } = useContext(ScheduleContext);
+    const { setStartingTimes, setEndingTimes, noTimeSlots} = useContext(ScheduleContext);
 
     const goToNext = () => {
+        if (!correctTime()) {
+            setIsValidTime(true);
+            return;
+        } else{
+            generateSlots(dayStartTime, noTimeSlots, matchDuration, setStartingTimes, setEndingTimes);
+        }
+
         if (inputValue != '' && venues.length > 0 && matchFormat !== '' && dates !== null) {
             props.nextPage();
         } else {
@@ -54,6 +67,37 @@ export default function ST_page2(props) {
         const value = event.target.value;
         setMatchFormat(value);
     };
+
+    const [dayStartTime, setDayStartTime] = useState('09:00 AM');
+    const [dayEndTime, setDayEndTime] = useState('05:00 PM');
+
+
+    function correctTime() {
+        let [stime, sampmValue] = dayStartTime.split(' ');
+
+        let [shours, sminutes] = stime.split(':');
+
+        // Convert hours to 24-hour format
+        shours = (parseInt(shours, 10) % 12) + (sampmValue === 'PM' ? 12 : 0);
+
+        const stotal = shours * 60 + parseInt(sminutes, 10);
+
+        let [etime, eampmValue] = dayEndTime.split(' ');
+
+        let [ehours, eminutes] = etime.split(':');
+
+        // Convert hours to 24-hour format
+        ehours = (parseInt(ehours, 10) % 12) + (eampmValue === 'PM' ? 12 : 0);
+
+        const etotal = ehours * 60 + parseInt(eminutes, 10);
+
+        console.log(dayEndTime, dayStartTime, dayStartTime, etotal, stotal, etotal - stotal);
+
+        return etotal - stotal > 0;
+    }
+
+    const [isValidTime, setIsValidTime] = useState(false);
+    const [matchDuration, setMatchDuration] = useState('01:30');
 
     return (
         <>
@@ -117,9 +161,21 @@ export default function ST_page2(props) {
                     </li>
                 </ul>
 
+                <div id='venue' className="block my-2 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        Enter Start & End Time of Day
+                    </h5>
+                    {(isValidTime) && (<p className={`text-red-500`}>*Invalid Time</p>)}
+                    <div className='flex justify-between'>
+                        <DayStartEnd header={`Starting Time`} time={dayStartTime} setTime={setDayStartTime} />
+                        <DayStartEnd header={`Ending Time`} time={dayEndTime} setTime={setDayEndTime} />
+                    </div>
+                    <div className='flex justify-between'>
+                        <Duration header={`Match Duration`} time={matchDuration} setTime={setMatchDuration} />
+                    </div>
+                </div>
 
-                <div className='flex justify-between'>
-
+                <div className='flex justify-between mb-2'>
                     <button onClick={props.prevPage} type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Previous</button>
                     <button onClick={goToNext} type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Next</button>
                 </div>

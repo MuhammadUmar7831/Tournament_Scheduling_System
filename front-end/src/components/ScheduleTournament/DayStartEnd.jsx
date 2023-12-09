@@ -1,22 +1,30 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 
-export default function Timepicker(props) {
+export default function DayStartEnd(props) {
 
-    const [hour, setHour] = useState('1');
-    const [minute, setMinute] = useState('00');
-    const [ampm, setAmpm] = useState('AM');
+    const [hour, setHour] = useState(() => {
+        const [hours] = props.time.split(':');
+        return hours;
+    });
+
+    const [minute, setMinute] = useState(() => {
+        let [, minutes] = props.time.split(':');
+        if (minutes.length > 2) {
+            minutes = minutes.slice(0, 2);
+        }
+        return minutes;
+    });
+
+    const [ampm, setAmpm] = useState(() => {
+        const [, ampmValue] = props.time.split(' ');
+        return ampmValue;
+    });
 
     useEffect(() => {
-        // Assuming props.time is in the format "hh:mm AM/PM"
-        const [time, ampmValue] = props.time.split(' ');
-
-        // Update the state variables based on the parsed values
-        const [hours, minutes] = time.split(':');
-        setHour(hours);
-        setMinute(minutes);
-        setAmpm(ampmValue);
-    }, [props.time]);
+        const formattedTime = `${hour}:${minute} ${ampm}`;
+        props.setTime(formattedTime);
+    }, [hour, minute, ampm]);
 
     const handleHourChange = (e) => {
         setHour(e.target.value);
@@ -28,15 +36,6 @@ export default function Timepicker(props) {
 
     const handleAmpmChange = (e) => {
         setAmpm(e.target.value);
-    };
-
-    useEffect(() => {
-        updateSelectedTime();
-    }, [hour, minute, ampm])
-
-    const updateSelectedTime = () => {
-        const formattedTime = `${hour}:${minute} ${ampm}`;
-        props.setTime(`${hour}:${minute} ${ampm}`);
     };
 
     return (

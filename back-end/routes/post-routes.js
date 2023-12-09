@@ -5,9 +5,9 @@ const Schedule = require('../models/Schedule');
 const Detail = require('../models/Detail');
 
 const { generateTeamCombinationsRR } = require('../Matches_Generators/roundRobin');
-const {generateGroupTeamCombinationsGG} = require('../Matches_Generators/groupStage')
+const { generateGroupTeamCombinationsGG } = require('../Matches_Generators/groupStage')
 
-const {groupStageGroupsGenerator} = require('../groups');
+const { groupStageGroupsGenerator } = require('../groups');
 const { teamsGenerator } = require('../teams');
 const { generatePin } = require('../Utility/pinGenratot');
 const { formatDate } = require('../Utility/dateFormat');
@@ -52,8 +52,8 @@ router.post('/addSchedule', async (req, res) => {
             generatedGroups = [];
         }
         else if (format === 'Group Stage') {
-            generatedGroups = await groupStageGroupsGenerator(teams);
             generatedTeams = await teamsGenerator(teams);
+            generatedGroups = await groupStageGroupsGenerator(generatedTeams);
             generatedMatches = await generateGroupTeamCombinationsGG(generatedGroups, teams, StartDate, EndDate, venues, times);
         }
 
@@ -200,6 +200,14 @@ router.post('/updateMatchResult', async (req, res) => {
         await Detail.updateOne(
             { tournamentPin: pin }, { $set: { lastMatch: matchNumber } }
         );
+        await Detail.updateOne(
+            { tournamentPin: pin, 'teams.name': winner },
+            { $set: { 'teams.$.lastMatch': matchNumber } }
+        );
+        await Detail.updateOne(
+            { tournamentPin: pin, 'teams.name': loser },
+            { $set: { 'teams.$.lastMatch': matchNumber } }
+        );
 
         const doc = await Detail.findOne({ tournamentPin: pin });
 
@@ -337,6 +345,27 @@ router.post('/updateMatchVenue', async (req, res) => {
 
 });
 
+router.post('/updateMatchTime', async (req, res) => {
+
+    try {
+        const { matchNumber, time, pin } = req.body;
+
+        const doc = await Detail.updateOne(
+            { tournamentPin: pin, 'matches.number': matchNumber },
+            {
+                $set: {
+                    'matches.$.time': time,
+                }
+            }
+        );
+        res.status(201).json(pin);  // 
+
+    } catch (error) {
+        res.status(500).send({ "error": "Internal Server error" });
+    }
+
+});
+
 function parseDate(dateString) {
     // Parse date string in the format "DD-MM-YYYY"
     const [day, month, year] = dateString.split('-');
@@ -445,6 +474,21 @@ router.post('/deActiveNextStage', async (req, res) => {
                 }
             }
         );
+        res.status(201).json(pin);
+
+    } catch (error) {
+        res.status(500).send({ "error": "Internal Server error" });
+    }
+
+});
+
+router.post('/deleteTournament', async (req, res) => {
+
+    try {
+        const { pin } = req.body;
+
+        await Schedule.deleteOne({ pin });
+        await Detail.deleteOne({ tournamentPin: pin });
         res.status(201).json(pin);
 
     } catch (error) {

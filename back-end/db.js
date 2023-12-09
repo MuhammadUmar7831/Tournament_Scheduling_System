@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 // my atlas uri
-const uri = 'mongodb+srv://Umar_Administrator:lrea6b4heY2Wsckx@cluster0.o4wktqe.mongodb.net/tournaments?retryWrites=true&w=majority';
+const uri = 'mongodb://127.0.0.1:27017/tournaments'
+// const uri = 'mongodb+srv://Umar_Administrator:lrea6b4heY2Wsckx@cluster0.o4wktqe.mongodb.net/tournaments?retryWrites=true&w=majority';
 
 var rtn = false;
 // establsihing connection with inotebook atlas mongodb

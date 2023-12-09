@@ -36,4 +36,42 @@ function calculateNoMatches(noteam, format) {
     return totalMatches;
 }
 
-export { getDaysDifference, calculateNoMatches };
+function generateTimeSlots(startingTime, slotDuration, numberOfSlots) {
+    const startingTimeSlots = [];
+    const endingTimeSlots = [];
+
+    // Convert starting and ending times to Date objects for easier manipulation
+    const startTime = new Date(`2023-01-01 ${startingTime}`);
+
+    // Calculate the duration of each time slot in minutes
+    const [durationHours, durationMinutes] = slotDuration.split(':');
+    const totalSlotDuration = parseInt(durationHours) * 60 + parseInt(durationMinutes);
+
+    // Generate time slots
+    for (let i = 0; i < numberOfSlots; i++) {
+        const slotStart = new Date(startTime.getTime() + i * totalSlotDuration * 60 * 1000);
+        const slotEnd = new Date(startTime.getTime() + (i + 1) * totalSlotDuration * 60 * 1000);
+
+        // Format the time in HH:mm AM/PM
+        const startFormatted = slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const endFormatted = slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        startingTimeSlots.push(startFormatted);
+        endingTimeSlots.push(endFormatted);
+    }
+
+
+    return { startingTimeSlots, endingTimeSlots };
+}
+
+function generateSlots(dayStartTime, noSlots, matchDuration, setStartingTimes, setEndingTimes) {
+    // let copyStartingTimes = [...startingTimes];
+    // let copyEndingTimes = [...endingTimes];
+
+    const obj = generateTimeSlots(dayStartTime, matchDuration, noSlots);
+    setStartingTimes(obj.startingTimeSlots);
+    setEndingTimes(obj.endingTimeSlots);
+    // console.log(dayStartTime, dayEndTime, matchDuration, copyStartingTimes, copyEndingTimes);
+}
+
+export { getDaysDifference, calculateNoMatches, generateSlots };
