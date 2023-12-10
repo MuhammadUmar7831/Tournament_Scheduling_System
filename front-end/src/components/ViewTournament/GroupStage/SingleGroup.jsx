@@ -14,7 +14,7 @@ export default function (props) {
 
     return (
         <>
-            <div className='w-2/5 m-auto my-5'>
+            <div className=' m-auto my-5'>
                 <div className='w-full rounded-md p-2 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-pink-500 text-center text-white text-lg font-bold'>{props.name}</div>
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -22,6 +22,15 @@ export default function (props) {
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     Team
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center">
+                                    Matches Played
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center">
+                                    Won
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center">
+                                    Lost
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-center">
                                     Points
@@ -37,6 +46,15 @@ export default function (props) {
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {team.name}
                                     </th>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.matchesPlayed}
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.won}
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.lost}
+                                    </td>
                                     <td class="px-6 py-4 text-center text-black">
                                         {team.points}
                                     </td>

@@ -24,7 +24,7 @@ export default function () {
                 </div>
             </div>
 
-            <div className='w-11/12 flex m-auto flex-wrap'>
+            <div className='w-full flex m-auto flex-wrap'>
                 {(detail)
                     && (detail.groups.length !== 0 && detail.groups.map((group) => {
                         return (

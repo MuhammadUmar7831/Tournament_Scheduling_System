@@ -35,6 +35,18 @@ const DetailSchema = new mongoose.Schema({
             type: Number,
             require: true,
             default: 0
+        },
+        matchesPlayed: {
+            type: Number,
+            default: 0
+        },
+        won: {
+            type: Number,
+            default: 0
+        },
+        lost: {
+            type: Number,
+            default: 0
         }
     }],
     groups: [{
@@ -55,6 +67,18 @@ const DetailSchema = new mongoose.Schema({
                 default: 0
             },
             boundries: {
+                type: Number,
+                default: 0
+            },
+            matchesPlayed: {
+                type: Number,
+                default: 0
+            },
+            won: {
+                type: Number,
+                default: 0
+            },
+            lost: {
                 type: Number,
                 default: 0
             }

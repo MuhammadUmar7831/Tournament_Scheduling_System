@@ -42,6 +42,15 @@ export default function () {
                                     Team
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-center">
+                                    Mtaches Played
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center">
+                                    Won
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center">
+                                    Lost
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center">
                                     Points
                                 </th>
                                 <th scope="col" class="px-6 py-3 text-center">
@@ -55,6 +64,15 @@ export default function () {
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {team.name}
                                     </th>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.matchesPlayed}
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.won}
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-black">
+                                        {team.lost}
+                                    </td>
                                     <td class="px-6 py-4 text-center text-black">
                                         {team.points}
                                     </td>

@@ -6,15 +6,12 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
-
 app.use('/schedules/get', require('./routes/get-routes'));
 app.use('/schedules/post', require('./routes/post-routes'));
 
 app.use('/schedules/round-robin', require('./routes/round-robin-routes'));
 app.use('/schedules/group-stage', require('./routes/group-stage-routes'));
+app.use('/schedules/knock-out', require('./routes/knock-out-routes'));
 
 const port = 80;
 app.listen(port, async () => {

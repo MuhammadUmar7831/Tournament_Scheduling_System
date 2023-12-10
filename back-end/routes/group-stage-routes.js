@@ -66,39 +66,14 @@ router.post('/updateMatchResult', async (req, res) => {
                 }
             }
         );
-        await Detail.updateOne(
-            { tournamentPin: pin }, { $set: { lastMatch: matchNumber } }
-        );
-        // update winner team last match
-        await Detail.updateOne(
-            {
-                tournamentPin: pin, 'teams.name': winner
-            },
-            {
-                $set: {
-                    'teams.$.lastMatch': matchNumber
-                }
-            }
-        );
-        // update loser team last match
-        await Detail.updateOne(
-            {
-                tournamentPin: pin, 'teams.name': loser
-            },
-            {
-                $set: {
-                    'teams.$.lastMatch': matchNumber
-                }
-            }
-        );
 
         const doc = await Detail.findOne({ tournamentPin: pin });
 
         // condition to check if the match is not final
         if (doc.matches.length !== matchNumber) {
+            // consdition if the match is new match
             if (isNewScore) {
-                // if the match is new match
-                // increase points of winner team by 2 and add winner boundries
+                // increase points of winner team by 2 and add winner boundries amd increase matches played and increase won
                 const winnerTeam = await Detail.findOne({ tournamentPin: pin, 'teams.name': winner },
                     { 'teams.$': 1 }
                 );
@@ -111,7 +86,9 @@ router.post('/updateMatchResult', async (req, res) => {
                     {
                         $set: {
                             'teams.$.points': points + 2,
-                            'teams.$.boundries': winnerTeam.teams[0].boundries + winnerBoundries
+                            'teams.$.boundries': winnerTeam.teams[0].boundries + winnerBoundries,
+                            'teams.$.matchesPlayed': winnerTeam.teams[0].matchesPlayed + 1,
+                            'teams.$.won': winnerTeam.teams[0].won + 1,
                         }
                     }
                 );
@@ -124,8 +101,10 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
+                            'groups.$[group].teams.$[team].points': points + 2,
                             'groups.$[group].teams.$[team].boundries': winnerTeam.teams[0].boundries + winnerBoundries,
-                            'groups.$[group].teams.$[team].points': points + 2
+                            'groups.$[group].teams.$[team].matchesPlayed': winnerTeam.teams[0].matchesPlayed + 1,
+                            'groups.$[group].teams.$[team].won': winnerTeam.teams[0].won + 1,
                         }
                     },
                     {
@@ -136,7 +115,7 @@ router.post('/updateMatchResult', async (req, res) => {
                     }
                 );
 
-                // update loser boundries
+                // update loser boundries and lost and matchesPlayed
                 const loserTeam = await Detail.findOne({ tournamentPin: pin, 'teams.name': loser },
                     { 'teams.$': 1 }
                 );
@@ -146,6 +125,8 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
+                            'teams.$.matchesPlayed': loserTeam.teams[0].matchesPlayed + 1,
+                            'teams.$.lost': loserTeam.teams[0].lost + 1,
                             'teams.$.boundries': loserTeam.teams[0].boundries + loserBoundries
                         }
                     }
@@ -154,26 +135,53 @@ router.post('/updateMatchResult', async (req, res) => {
                     {
                         tournamentPin: pin,
                         'groups.stage': doc.currentStage,
-                        'groups.teams.name': winner
+                        'groups.teams.name': loser
                     },
                     {
                         $set: {
+                            'groups.$[group].teams.$[team].matchesPlayed': loserTeam.teams[0].matchesPlayed + 1,
+                            'groups.$[group].teams.$[team].lost': loserTeam.teams[0].lost + 1,
                             'groups.$[group].teams.$[team].boundries': loserTeam.teams[0].boundries + loserBoundries,
                         }
                     },
                     {
                         arrayFilters: [
-                            { 'team.name': winner },
+                            { 'team.name': loser },
                             { 'group.stage': doc.currentStage }
                         ]
                     }
                 );
-
+                console.log(loserTeam);
+                await Detail.updateOne(
+                    { tournamentPin: pin }, { $set: { lastMatch: matchNumber } }
+                );
+                // update winner team last match
+                await Detail.updateOne(
+                    {
+                        tournamentPin: pin, 'teams.name': winner
+                    },
+                    {
+                        $set: {
+                            'teams.$.lastMatch': matchNumber
+                        }
+                    }
+                );
+                // update loser team last match
+                await Detail.updateOne(
+                    {
+                        tournamentPin: pin, 'teams.name': loser
+                    },
+                    {
+                        $set: {
+                            'teams.$.lastMatch': matchNumber
+                        }
+                    }
+                );
             }
             // if winner is different from previous update
             else if (detailDocument.matches[0].winner !== winner) {
                 //if the match results was already updates decrease the loser point by 2 and increse winner points by 2
-                // decreasing loser points
+                // decreasing loser points and decreasing won and increasing lost
                 const loserTeam = await Detail.findOne({ tournamentPin: pin, 'teams.name': detailDocument.matches[0].winner },
                     { 'teams.$': 1 }
                 );
@@ -183,7 +191,9 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
-                            'teams.$.points': loserTeam.teams[0].points - 2
+                            'teams.$.points': loserTeam.teams[0].points - 2,
+                            'teams.$.lost': loserTeam.teams[0].lost + 1,
+                            'teams.$.won': loserTeam.teams[0].won - 1
                         }
                     }
                 );
@@ -196,7 +206,9 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
-                            'groups.$[group].teams.$[team].points': loserTeam.teams[0].points - 2
+                            'groups.$[group].teams.$[team].points': loserTeam.teams[0].points - 2,
+                            'groups.$[group].teams.$[team].lost': loserTeam.teams[0].lost + 1,
+                            'groups.$[group].teams.$[team].won': loserTeam.teams[0].won - 1,
                         }
                     },
                     {
@@ -207,7 +219,7 @@ router.post('/updateMatchResult', async (req, res) => {
                     }
                 );
 
-                // increasing winner points
+                // increasing winner points and won and decreading lost
                 const winnerTeam = await Detail.findOne({ tournamentPin: pin, 'teams.name': winner },
                     { 'teams.$': 1 }
                 );
@@ -218,6 +230,8 @@ router.post('/updateMatchResult', async (req, res) => {
                     {
                         $set: {
                             'teams.$.points': winnerTeam.teams[0].points + 2,
+                            'teams.$.lost': winnerTeam.teams[0].lost - 1,
+                            'teams.$.won': winnerTeam.teams[0].won + 1,
                         }
                     }
                 );
@@ -230,7 +244,9 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
-                            'groups.$[group].teams.$[team].points': winnerTeam.teams[0].points + 2
+                            'groups.$[group].teams.$[team].points': winnerTeam.teams[0].points + 2,
+                            'groups.$[group].teams.$[team].won': winnerTeam.teams[0].won + 1,
+                            'groups.$[group].teams.$[team].lost': winnerTeam.teams[0].lost - 1,
                         }
                     },
                     {
@@ -304,8 +320,6 @@ router.post('/updateMatchResult', async (req, res) => {
                     ]
                 }
             );
-
-
         }
 
         res.status(201).json(pin);

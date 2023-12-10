@@ -5,7 +5,8 @@ const Schedule = require('../models/Schedule');
 const Detail = require('../models/Detail');
 
 const { generateTeamCombinationsRR } = require('../Matches_Generators/roundRobin');
-const { generateGroupTeamCombinationsGG } = require('../Matches_Generators/groupStage')
+const { generateGroupTeamCombinationsGG } = require('../Matches_Generators/groupStage');
+const { generateGroupTeamCombinationsKnockOut } = require('../Matches_Generators/knockout');
 
 const { groupStageGroupsGenerator } = require('../groups');
 const { teamsGenerator } = require('../teams');
@@ -55,6 +56,11 @@ router.post('/addSchedule', async (req, res) => {
             generatedTeams = await teamsGenerator(teams);
             generatedGroups = await groupStageGroupsGenerator(generatedTeams);
             generatedMatches = await generateGroupTeamCombinationsGG(generatedGroups, teams, StartDate, EndDate, venues, times);
+        }
+        else if (format == 'Knock out') {
+            generatedTeams = await teamsGenerator(teams);
+            generatedGroups = [];
+            generatedMatches = await generateGroupTeamCombinationsKnockOut(teams, StartDate, EndDate, venues, times);
         }
 
         const newDetail = new Detail({
@@ -227,17 +233,9 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
-                            'teams.$.points': points + 2
-                        }
-                    }
-                );
-                // update winner boundries
-                await Detail.updateOne(
-                    {
-                        tournamentPin: pin, 'teams.name': winner
-                    },
-                    {
-                        $set: {
+                            'teams.$.points': points + 2,
+                            'teams.$.matchesPlayed': winnerTeam.teams[0].matchesPlayed + 1,
+                            'teams.$.won': winnerTeam.teams[0].won + 1,
                             'teams.$.boundries': winnerTeam.teams[0].boundries + winnerBoundries
                         }
                     }
@@ -248,11 +246,13 @@ router.post('/updateMatchResult', async (req, res) => {
                 );
                 await Detail.updateOne(
                     {
-                        tournamentPin: pin, 'teams.name': winner
+                        tournamentPin: pin, 'teams.name': loser
                     },
                     {
                         $set: {
-                            'teams.$.boundries': loserTeam.teams[0].boundries + loserBoundries
+                            'teams.$.matchesPlayed': loserTeam.teams[0].matchesPlayed + 1,
+                            'teams.$.lost': loserTeam.teams[0].lost + 1,
+                            'teams.$.boundries': loserTeam.teams[0].boundries + loserBoundries,
                         }
                     }
                 );
@@ -270,7 +270,9 @@ router.post('/updateMatchResult', async (req, res) => {
                     },
                     {
                         $set: {
-                            'teams.$.points': loserTeam.teams[0].points - 2
+                            'teams.$.points': loserTeam.teams[0].points - 2,
+                            'teams.$.won': loserTeam.teams[0].won - 1,
+                            'teams.$.lost': loserTeam.teams[0].lost + 1
                         }
                     }
                 );
@@ -285,6 +287,8 @@ router.post('/updateMatchResult', async (req, res) => {
                     {
                         $set: {
                             'teams.$.points': winnerTeam.teams[0].points + 2,
+                            'teams.$.won': winnerTeam.teams[0].won + 1,
+                            'teams.$.lost': winnerTeam.teams[0].lost + 1
                         }
                     }
                 );

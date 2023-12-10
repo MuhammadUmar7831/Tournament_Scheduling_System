@@ -7,14 +7,14 @@ import Alert from '../Alert';
 import LoadingBar from 'react-top-loading-bar';
 import LastMatchesSection from './LastMatchesSection';
 import ViewContext from '../../context/ViewContext';
-import GroupStageContext from '../../context/GroupStageContext';
+import KnockoutContext from '../../context/KnockoutContext';
 
 
-export default function GroupStage() {
+export default function Knockout() {
 
     const { getDetail, detail, pin } = useContext(ScheduleContext);
-    const { activeNextStage, semiFinalStage } = useContext(ViewContext);
-    const { gotoNextStage, deActiveNextStage } = useContext(GroupStageContext);
+    const { deActiveNextStage } = useContext(ViewContext);
+    const { gotoNextStage } = useContext(KnockoutContext);
     const [pinDisplay, setPinDisplay] = useState('hidden');
     const [pinAuth, setPinAuth] = useState(false);
     const [alertDispaly, setAlertDispaly] = useState('hidden');
@@ -31,19 +31,16 @@ export default function GroupStage() {
     }, [pin, detail])
 
     const isNextStageButtonShow = (match) => {
-
-        let matchNo = 0;
-
-        for (let i = 0; i < detail.currentStage; i++) {
-            matchNo += ((detail.teams.length / (i + 1)) / 4) * 6;
+        let stageLastMatch = 0;
+        for (let i = 1; i <= detail.currentStage; i++) {
+            stageLastMatch += detail.teams.length / Math.pow(2, i);
         }
-
-        return matchNo === match.number;
+        return stageLastMatch === match.number;
     }
 
-    async function handelNextStageClick (matchNumber) {
+    async function handleNextStageClick() {
         setProgress(30);
-        await gotoNextStage(pin, matchNumber + 1);
+        await gotoNextStage(pin);
         setProgress(70);
         await deActiveNextStage(pin);
         setProgress(100);
@@ -61,9 +58,8 @@ export default function GroupStage() {
                 <div className='h-full flex items-center justify-center'>
                     <img onClick={() => { nevigate('/viewTournament') }} src="/back.png" className='w-10 h-10 hover:cursor-pointer' alt="" srcSet="" />
                 </div>
-                <div className="flex items-center justify-between h-full w-2/4 m-auto">
-                    <p className="mx-2 self-end text-white text-lg md:text-xl lg:text-xl border-b-4 border-b-white hover:text-amber-400 hover:cursor-pointer hover:border-b-amber-400">Fixtures</p>
-                    <p onClick={() => { nevigate('/groupstage/viewStandings') }} className="mx-2 self-end text-white text-lg md:text-xl lg:text-xl border-b-4 border-b-yellow-500 hover:text-amber-400 hover:cursor-pointer hover:border-b-amber-400">Standings</p>
+                <div className="flex items-center justify-between h-full w-2/4 m-auto tracking-widest">
+                    <h1 className='m-auto text-3xl font-bold text-white'>Fixtures</h1>
                 </div>
             </div>
             <Alert display={alertDispaly} setDisplay={setAlertDispaly} message={"Pin authentication successfull"} />
@@ -91,15 +87,15 @@ export default function GroupStage() {
                         <React.Fragment key={match.number}>
                             <Match match={match} pinAuth={pinAuth} matches={detail.matches} lastMatch={detail.lastMatch} nextStage={detail.nextStage} teams={detail.teams} currentStage={detail.currentStage} totalTeams={detail.teams.length} />
 
-                            {(isNextStageButtonShow(match)) 
-                            && (pinAuth) 
-                            && (detail.nextStage !== 0) 
-                            && (match.number !== detail.matches.length - 1)
-                            &&
+                            {(isNextStageButtonShow(match))
+                                && (pinAuth)
+                                && (detail.nextStage !== 0)
+                                && (match.number !== detail.matches.length - 1)
+                                &&
                                 (
                                     <div className='w-full text-center p-2'>
                                         <button
-                                            onClick={() => handelNextStageClick(match.number)}
+                                            onClick={handleNextStageClick}
                                             type="button"
                                             className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                         >
@@ -107,16 +103,18 @@ export default function GroupStage() {
                                         </button>
                                     </div>
                                 )}
-                        </React.Fragment>
-                    ))}
-            </div>
+                        </React.Fragment >
+                    ))
+                }
+            </div >
 
 
             {(detail) && (detail.matches) && (
                 <div className='w-full flex items-center flex-col'>
                     <LastMatchesSection matches={detail.matches} lastMatch={detail.lastMatch} pinAuth={pinAuth} nextStage={detail.nextStage} pin={pin} teams={detail.teams} currentStage={detail.currentStage} totalTeams={detail.teams.length} />
                 </div>
-            )}
+            )
+            }
 
 
             <EnterPin display={pinDisplay} setDisplay={setPinDisplay} pin={pin} setPinAuth={setPinAuth} setAlertDispaly={setAlertDispaly} />
