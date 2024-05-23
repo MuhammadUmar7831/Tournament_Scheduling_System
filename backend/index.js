@@ -23,7 +23,7 @@ app.get('/getSchedules', async (req, res) => {
         // Send the schedules as a response
         res.status(200).json(schedules);
     } catch (error) {
-        res.status(200).json({'message':'Internal server error', error});
+        res.status(200).json({'message':'Internal server error', 'error' : error.message});
     }
 })
 
