@@ -1,5 +1,6 @@
 {
    "version": 2,
+   "name": "khail-api",
    "functions": {
      "api/**/*.js": {
        "maxDuration": 45
