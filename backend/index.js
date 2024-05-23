@@ -10,6 +10,23 @@ app.get("/", async (req, res) => {
   res.status(200).send("Successfull");
 });
 
+router.get('/getSchedules', async (req, res) => {
+    try {
+        // finds the user with the id passed as token in request header decrypted in fetchUser
+        const schedules = await Schedule.find({});
+
+        // Check if there are schedules
+        if (!schedules || schedules.length === 0) {
+            return res.status(404).json({ message: 'No schedules found.' });
+        }
+
+        // Send the schedules as a response
+        res.status(200).json(schedules);
+    } catch (error) {
+        res.status(200).send('Internal server error', error);
+    }
+})
+
 app.use("/schedules/get", require("./routes/get-routes"));
 app.use("/schedules/post", require("./routes/post-routes"));
 
