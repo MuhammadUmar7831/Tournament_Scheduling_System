@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const connectToDatabase = require("./db");
+const Schedule = require("./models/Schedule");
 
 const app = express();
 app.use(express.json());
