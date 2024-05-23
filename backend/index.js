@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get("/getSchedules", async (req, res) => {
+app.get("/", async (req, res) => {
   res.status(200).send("Successfull");
 });
 
