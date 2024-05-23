@@ -12,10 +12,10 @@ app.get("/", async (req, res) => {
 });
 
 app.get('/getSchedules', async (req, res) => {
-  res.status(200).send({"message": "success"});
     try {
         // finds the user with the id passed as token in request header decrypted in fetchUser
         const schedules = await Schedule.find({});
+        res.status(200).send({"message": "success"});
 
         // Check if there are schedules
         if (!schedules || schedules.length === 0) {
