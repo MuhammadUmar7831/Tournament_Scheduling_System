@@ -10,7 +10,7 @@ app.get("/", async (req, res) => {
   res.status(200).send("Successfull");
 });
 
-router.get('/getSchedules', async (req, res) => {
+app.get('/getSchedules', async (req, res) => {
     try {
         // finds the user with the id passed as token in request header decrypted in fetchUser
         const schedules = await Schedule.find({});
