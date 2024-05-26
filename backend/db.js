@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // my atlas uri
-const uri = 'mongodb://127.0.0.1:27017/tournaments'
-// const uri = process.env.MONGODB_URI
+// const uri = 'mongodb://127.0.0.1:27017/tournaments'
+const uri = process.env.MONGODB_URI
 
 var rtn = false;
 // establsihing connection with inotebook atlas mongodb
